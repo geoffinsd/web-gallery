@@ -1,0 +1,237 @@
+<?php
+
+//rehash of website
+/*adsense update
+August 2011
+*/
+
+require 'DB.php';
+$db = DB::connect('mysql://geoff:chiaroscuro@db.telavant.com/portraits');
+
+$num = $_GET['num'];
+
+if ($num >= 1) {
+$db->setFetchMode(DB_FETCHMODE_OBJECT);
+
+$x = $db->query("SELECT * FROM gallery");
+
+$count = $x->numrows();
+
+$q = $db->query("SELECT * FROM gallery WHERE num LIKE $num");
+
+while($row = $q->fetchRow()) {
+
+print "<html><head><title>Pastel Drawing by Geoffrey Craig: $row->title</title></head> \n";
+
+print <<<_TOPOFTOUR_
+<meta name="description" content="I create beautiful portrait drawings with
+pastel pencils using
+photographs of your loved one(s) as a reference">
+<meta name="keywords" content="artist portrait drawing chiaroscuro pastel
+pencil commission gallery Geoff Geoffrey Craig geoffreycraig San Diego
+picture pics image http://www.geoffcraig.com http://www.geoffreycraig.com
+geoffcraig.com geoffreycraig.com">
+<link rel="stylesheet" type="text/css"
+href="gallery.css" />
+</head>
+<body>
+<a name="top">
+<!-- div align="center" -->
+<table bgcolor="#ffffff">
+<tr><td style="text-align: center; margin: 0px 25px 25px 25px">
+_TOPOFTOUR_;
+
+print "<table width=100%> \n<tr> \n";
+
+print "<td style=\"vertical-align: top; padding: 20px 40px 40px 20px\"> \n<!-- image not centered --> \n";
+//Portrait Image
+print "<img src=\"images/portrait";
+printf("%02d", $num);
+print ".jpg\" alt=\"a portrait drawing\"></td> \n";
+print "<td valign=\"top\"> \n";
+//list of links line 61
+print "<table> \n<tr><td><img src=\"images/menu.jpg\" alt=\"menu\"></td></tr> \n";
+//link to next page
+print "<tr><td><a href=\"index.php?num=";
+if ($num >= $count) {
+print 1;
+} else {
+print $num + 1;
+}
+print "\"><img src=\"images/next.jpg\" alt=\"next\"></a></td></tr> \n";
+//link to previous page
+print "<tr><td><a href=\"index.php?num=";
+if ($num == 1) {
+//line 74
+print $count;   
+} else { 
+print $num - 1;
+}
+print "\"><img src=\"images/previous.jpg\" alt=\"previous\"></a></td></tr> \n";
+print "<tr><td><a href=\"index.php?num=0\">";
+print "<img src=\"images/gallery.jpg\" alt=\"gallery\"></a></td></tr> \n";
+//line 82
+print "</table> \n</td> \n</tr>";
+print "<tr><td style=\"text-align: center\"><p><br>$row->title<br><br>$row->comments<br>";
+print "Dimensions: $row->size<br> $row->date<p><br><br></td><td></td> </tr>";
+
+print "<tr><td style=\"text-align: center\"> \n";
+print "<a href=\"#top\"><img src=\"images/top.jpg\" alt=\"top\"></a> \n";
+print "<a href=\"index.php?num=";
+if ($num == 1) {
+print 25;
+} else {
+print $num - 1;
+}
+print "\"><img src=\"images/previous.jpg\" alt=\"previous\"></a> \n";
+print "<a href=\"index.php?num=";
+if ($num >= $count) {
+print 1; 
+} else {
+print $num + 1;
+}
+print "\"><img src=\"images/next.jpg\" alt=\"next\"></a> \n";
+print "<a href=\"index.php?num=0\"><img src=\"images/gallery.jpg\" alt=\"gallery\"> \n";
+print "<br><br><br></td><td></td></tr> \n<tr> \n";
+print "<td colspan=\"2\" align=\"center\">";
+print "<p>All original artwork and webpage design by";
+print "<a href=\"mailto:portraits@geoffcraig.com\">";
+print "<font color=\"#0000ff\"> Geoffrey Craig</font></a> copyright 2004-2011</p><br> \n";
+print "</td></tr></table> \n";
+}
+//gallery
+} else {
+
+print <<<_TOPOFPAGE_
+<html>
+<head><title>Geoffrey Craig Portrait Gallery</title>
+<meta name="description" content="I create beautiful portrait drawings with
+pastel pencils using
+photographs of your loved one(s) as a reference">
+<meta name="keywords" content="artist portrait drawing chiaroscuro pastel
+pencil commission gallery Geoff Geoffrey Craig geoffreycraig San Diego
+picture pics image http://www.geoffcraig.com http://www.geoffreycraig.com
+geoffcraig.com geoffreycraig.com">
+<link rel="stylesheet" type="text/css"
+href="gallery.css" />
+</head>
+<body>
+<a name="top">
+<div align="center">
+<table width="862" class="white">
+<tr><td style="text-align: center; padding: 4px 6px 4px 6px">
+_TOPOFPAGE_;
+
+$q = $db->query('SELECT num FROM gallery ORDER BY rand() LIMIT 20');
+
+print "<img src=\"images/banner.jpg\" width=\"100%\"><br></td></tr> \n";
+
+print "<tr><td style=\"background-image: url(images/watermark.jpg); \n";
+print "background-repeat: no-repeat; background-position: top center\">\n"; //watermark table
+
+print "<table width=\"100%\"> \n";
+
+print "<tr><td style=\"padding-left: 8px\"> \n<table> \n";
+
+//grid of random pictures
+
+$line = 1;
+while ($line <= 4) {
+print "<tr>\n";
+$pic = 1;
+while ($pic <= 5) {
+$pic = 1;
+while ($pic <= 5) {
+$row = $q->fetchRow();
+print '<td>';
+print '<a href="index.php?num=';
+print $row[0];
+print "\"><img src=\"images/thumb_portrait";
+printf("%02d", $row[0]);
+print '.jpg" alt="Click me!"></a>'; print 
+"</td> \n"; $pic++; }
+print "</tr>\n";
+$line++;
+}}
+print "</td></tr> \n<tr><td colspan=\"5\" align=\"center\"> \n";
+print "<p>Refreshing this page will show a new random array of thumb-nail pictures.</p>";
+//picture grid ends here 
+         
+print "</td></tr></table> \n </td> \n";
+//index filler such as counter etc
+
+
+print <<<_textcolumn_
+<td>
+<table>
+<tr><th style="text-align: center"><h4>Portraits in Pastel</h4></th></tr>
+<tr><td style="padding: 0px 25px 25px 25px; vertical-align: bottom">
+<p>Geoff Craig is a portrait  artist based in San Diego CA.</p>
+<p>
+To view more examples of the artist's drawings follow the
+<a href="http://www.geoffreycraig.com/index.php?num=1"><font
+color="#0000ff">tour</font></a> link.</p>
+<p>
+For more information or to contact Geoff go to the section 
+<a href="#contact"><font color="#0000ff">
+below</font></a> link or email Geoff directly:
+</p>
+<div align="center">
+<a href="mailto:portraits@geoffcraig.com?subject=Portrait%20Inquiry"><font
+color="#000000"> portraits@geoffcraig.com</font></a>
+<br><br>
+<p>
+Last updated
+<br>
+March 2008
+</p>
+<br>
+<a href="http://www.geoffcraig.com"><font
+color="#ffffff">www.geoffcraig.com</font></a>
+<a href="http://www.geoffreycraig.com"><font
+color="#ffffff">www.geoffreycraig.com</font></a>
+<br>
+<!-- web counter -->
+<a href="http://www.amazingcounters.com" target="_top"><img border="0"
+src="http://www.amazingcounters.com/counter.php?i=68596&c=206101" alt="free hit
+counters"></a><br><small><a href="http://www.allonlinecoupons.com/st/crucial-memory/"
+target="_top">
+<font color="#999999">Crucial Coupon Code</font></a></small>
+<br>
+</div>
+</div>
+</td></tr>
+</table></td>
+<!-- watermark table ends here -->
+<tr><td align="center" colspan="2">
+<a href="#top"><img src="images/top.jpg"></a>
+<a href="index.php#contact"><img src="images/contact.jpg"></a>
+<a href="index.php?num=1"><img src="images/tour.jpg"></a>
+<a href="http://www.geoffcraig.com/images/gmc06.pdf"><img 
+src="images/download.jpg"></a></td></tr>
+</table></td></tr>
+<!-- information section -->
+<tr><td style="padding: 0cm 1.2cm 0cm 1.5cm"><br><br><br>
+<a name="contact"><br>
+<div align="center">
+<img src="images/contact.jpg">
+</div>
+<br>
+<a href="mailto:portraits@geoffcraig.com?subject=Portrait%20Inquiry">
+<img src="images/portraitsemail.jpg" alt="portraits@geoffcraig.com"></a>
+</div><br>
+</td></tr>
+<tr><td align="center" colspan="2">
+<a href="#top"><img src="images/top.jpg"></a>
+<a href="index.php?num=1"><img src="images/tour.jpg"></a>
+<a href="http://www.geoffcraig.com/images/gmc06.pdf"><img
+src="images/download.jpg"></a></td></tr>
+<tr><td colspan="2" align="center">
+<p>All original artwork and webpage design by
+<a href="mailto:portraits@geoffcraig.com">
+<font color="#0000ff"> Geoffrey Craig</font></a> copyright 2004-2011</p><br>
+</td></tr></table>
+_textcolumn_;
+}
+print "<!-- /div --></body></html>";
+?>
