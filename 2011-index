@@ -3,6 +3,7 @@
 //rehash of website
 /*adsense update
 August 2011
+sent this to Github to try to get some sense out of it, beginning of May 2015
 */
 
 require 'DB.php';
